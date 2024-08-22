@@ -1,36 +1,36 @@
 package com.vrbeneficios.miniautorizador.controller;
 
-import com.vrbeneficios.miniautorizador.model.Cartao;
-import com.vrbeneficios.miniautorizador.service.CartaoService;
+import com.vrbeneficios.miniautorizador.service.TransacaoService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/cartoes")
-public class CartaoController {
+@RequestMapping("/transacoes")
+public class TransacaoController {
 
     @Autowired
-    private CartaoService cartaoService;
+    private TransacaoService transacaoService;
 
     @PostMapping
-    public ResponseEntity<Cartao> criarCartao(@RequestBody Cartao cartao) {
+    public ResponseEntity<String> realizarTransacao(@RequestBody TransacaoRequest request) {
         try {
-            Cartao novoCartao = cartaoService.criarCartao(cartao);
-            return new ResponseEntity<>(novoCartao, HttpStatus.CREATED);
+            transacaoService.autorizarTransacao(request.getNumeroCartao(), request.getSenhaCartao(), request.getValor());
+            return new ResponseEntity<>("OK", HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
-    @GetMapping("/{numeroCartao}")
-    public ResponseEntity<Double> obterSaldo(@PathVariable String numeroCartao) {
-        try {
-            double saldo = cartaoService.obterSaldo(numeroCartao);
-            return new ResponseEntity<>(saldo, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @Getter
+    @Setter
+    class TransacaoRequest {
+        private String numeroCartao;
+        private String senhaCartao;
+        private double valor;
+
     }
 }
