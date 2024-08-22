@@ -11,8 +11,7 @@ Clone o Repositório
 
 bash
 Copiar código
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+git clone https://github.com/ricartemagalhaes/miniautorizador
 Suba o Banco de Dados
 
 Utilize Docker Compose para iniciar o MySQL:
